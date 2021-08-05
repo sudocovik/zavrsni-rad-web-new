@@ -16,5 +16,6 @@ const cluster: KubernetesCluster = new KubernetesCluster('main-cluster', {
     },
     version: '1.21.2-do.2',
     autoUpgrade: false,
-    surgeUpgrade: false
+    surgeUpgrade: false,
+    vpcUuid: vpc.id
 })
