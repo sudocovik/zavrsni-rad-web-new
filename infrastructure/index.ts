@@ -1,4 +1,4 @@
-import { Region, Vpc, KubernetesCluster,  } from '@pulumi/digitalocean'
+import { Project, Region, Vpc, KubernetesCluster } from '@pulumi/digitalocean'
 
 const region: Region = Region.FRA1
 
@@ -20,4 +20,11 @@ const cluster: KubernetesCluster = new KubernetesCluster('main-cluster', {
     autoUpgrade: false,
     surgeUpgrade: false,
     vpcUuid: vpc.id
+})
+
+new Project('main-project', {
+    name: 'Final thesis',
+    description: 'Resources supporting final thesis',
+    purpose: 'Class project / Educational purposes',
+    resources: [ cluster.clusterUrn ]
 })
