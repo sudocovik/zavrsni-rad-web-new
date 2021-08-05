@@ -1,4 +1,4 @@
-import { KubernetesCluster, Region, Vpc } from '@pulumi/digitalocean'
+import { Region, Vpc, KubernetesCluster,  } from '@pulumi/digitalocean'
 
 const region: Region = Region.FRA1
 
