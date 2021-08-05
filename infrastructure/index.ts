@@ -4,12 +4,12 @@ const region: Region = Region.FRA1
 
 const vpc: Vpc = new Vpc('main-vpc', {
     name: 'final-thesis',
-    region: region
+    region
 })
 
 const cluster: KubernetesCluster = new KubernetesCluster('main-cluster', {
     name: 'final-thesis',
-    region: region,
+    region,
     nodePool: {
         name: 'worker',
         size: 's-1vcpu-2gb',
