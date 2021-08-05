@@ -8,7 +8,7 @@ const vpc: Vpc = new Vpc('main-vpc', {
 })
 
 const cluster: KubernetesCluster = new KubernetesCluster('main-cluster', {
-    name: 'main',
+    name: 'final-thesis',
     region: region,
     nodePool: {
         name: 'worker',
