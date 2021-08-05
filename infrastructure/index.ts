@@ -1,4 +1,9 @@
-import { KubernetesCluster, Region } from '@pulumi/digitalocean'
+import { KubernetesCluster, Region, Vpc } from '@pulumi/digitalocean'
+
+const vpc: Vpc = new Vpc('main-vpc', {
+    name: 'final-thesis',
+    region: Region.FRA1
+})
 
 const cluster: KubernetesCluster = new KubernetesCluster('main-cluster', {
     name: 'main',
