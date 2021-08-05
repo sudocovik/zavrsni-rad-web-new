@@ -1,13 +1,15 @@
 import { KubernetesCluster, Region, Vpc } from '@pulumi/digitalocean'
 
+const region: Region = Region.FRA1
+
 const vpc: Vpc = new Vpc('main-vpc', {
     name: 'final-thesis',
-    region: Region.FRA1
+    region: region
 })
 
 const cluster: KubernetesCluster = new KubernetesCluster('main-cluster', {
     name: 'main',
-    region: Region.FRA1,
+    region: region,
     nodePool: {
         name: 'worker',
         size: 's-1vcpu-2gb',
