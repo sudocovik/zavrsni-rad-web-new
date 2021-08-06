@@ -29,7 +29,7 @@ export function configure(provider: Provider) {
     const frontend = new k8s.core.v1.Service(appName, {
         metadata: { labels: nginx.spec.template.metadata.labels },
         spec: {
-            type: 'LoadBalancer',
+            type: 'ClusterIP',
             ports: [{
                 port: 80,
                 targetPort: 80,
@@ -37,6 +37,33 @@ export function configure(provider: Provider) {
             }],
             selector: appLabels,
         },
+    }, { provider })
+
+    const traefikIngress = new k8s.helm.v3.Chart('traefik-ingress', {
+        chart: 'traefik',
+        version: '10.1.1',
+        fetchOpts: {
+            repo: 'https://helm.traefik.io/traefik',
+        }
+    }, {
+        provider
+    })
+
+    const ingress = new k8s.networking.v1.Ingress('default-ingress', {
+        metadata: {
+            name: 'default-ingress'
+        },
+        spec: {
+            ingressClassName: 'traefik',
+            defaultBackend: {
+                service: {
+                    name: frontend.metadata.name,
+                    port: {
+                        number: frontend.spec.ports[0].port
+                    }
+                }
+            }
+        }
     }, { provider })
 
     return {
