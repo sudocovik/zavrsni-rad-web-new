@@ -43,6 +43,128 @@ export function configure(provider: Provider) {
         }
     }, { provider })
 
+    const mysqlConfig = new k8s.core.v1.Secret('mysql-config', {
+        metadata: {
+            name: 'mysql-config',
+        },
+        data: {
+            rootPassword: Buffer.from('root-mysql-password', 'utf-8').toString('base64'),
+            username: Buffer.from('box-runner', 'utf-8').toString('base64'),
+            password: Buffer.from('box-runner-password', 'utf-8').toString('base64'),
+            databaseName: Buffer.from('box', 'utf-8').toString('base64')
+        }
+    }, { provider })
+
+
+    const mysqlVolumeClaim = new k8s.core.v1.PersistentVolumeClaim('mysql-volume-claim', {
+        metadata: {
+            name: 'mysql-volume-claim'
+        },
+        spec: {
+            accessModes: ['ReadWriteOnce'],
+            resources: {
+                requests: {
+                    storage: '1Gi'
+                }
+            },
+            storageClassName: 'do-block-storage'
+        }
+    }, { provider })
+
+
+    const mysqlName = 'mysql'
+    const mysqlLabels = { app: mysqlName }
+    const mysqlDeployment = new k8s.apps.v1.Deployment(mysqlName, {
+        spec: {
+            selector: { matchLabels: mysqlLabels },
+            replicas: 1,
+            strategy: {
+                type: 'Recreate'
+            },
+            template: {
+                metadata: { labels: mysqlLabels },
+                spec: {
+                    volumes: [{
+                        name: mysqlVolumeClaim.metadata.name,
+                        persistentVolumeClaim: {
+                            claimName: mysqlVolumeClaim.metadata.name
+                        }
+                    }],
+                    containers: [{
+                        name: mysqlName,
+                        image: 'mysql:8.0',
+                        imagePullPolicy: 'IfNotPresent',
+                        ports: [{ containerPort: 3006 }],
+                        readinessProbe: {
+                            tcpSocket: {
+                                port: 3306
+                            },
+                            initialDelaySeconds: 20
+                        },
+                        volumeMounts: [{
+                            name: mysqlVolumeClaim.metadata.name,
+                            mountPath: '/var/lib/mysql'
+                        }],
+                        env: [
+                            {
+                                name: 'MYSQL_ROOT_PASSWORD',
+                                valueFrom: {
+                                    secretKeyRef: {
+                                        name: mysqlConfig.metadata.name,
+                                        key: 'rootPassword'
+                                    }
+                                }
+                            },
+                            {
+                                name: 'MYSQL_USER',
+                                valueFrom: {
+                                    secretKeyRef: {
+                                        name: mysqlConfig.metadata.name,
+                                        key: 'username'
+                                    }
+                                }
+                            },
+                            {
+                                name: 'MYSQL_PASSWORD',
+                                valueFrom: {
+                                    secretKeyRef: {
+                                        name: mysqlConfig.metadata.name,
+                                        key: 'password'
+                                    }
+                                }
+                            },
+                            {
+                                name: 'MYSQL_DATABASE',
+                                valueFrom: {
+                                    secretKeyRef: {
+                                        name: mysqlConfig.metadata.name,
+                                        key: 'databaseName'
+                                    }
+                                }
+                            }
+                        ]
+                    }]
+                }
+            }
+        }
+    }, { provider })
+
+    const mysqlService = new k8s.core.v1.Service(mysqlName, {
+        metadata: {
+            labels: mysqlDeployment.spec.template.metadata.labels,
+            name: mysqlName
+        },
+        spec: {
+            type: 'ClusterIP',
+            ports: [{
+                port: 3306,
+                targetPort: 3306,
+                protocol: 'TCP'
+            }],
+            selector: mysqlLabels,
+        },
+    }, { provider })
+
     const appName = 'box-app'
     const appLabels = { app: appName }
     const boxApp = new k8s.apps.v1.Deployment(appName, {
@@ -65,7 +187,56 @@ export function configure(provider: Provider) {
                         name: appName,
                         image: 'ghcr.io/covik/box-app:latest',
                         imagePullPolicy: 'Always',
-                        ports: [{ containerPort: 9000 }]
+                        ports: [{ containerPort: 9000 }],
+                        env: [
+                            {
+                                name: 'LOG_CHANNEL',
+                                value: 'stderr'
+                            },
+                            {
+                                name: 'APP_ENV',
+                                value: 'production'
+                            },
+                            {
+                                name: 'APP_KEY',
+                                value: 'base64:qrEAkmIzeUHTgGJZrFORW2nt7UI9uEBxuNy5dYUZqxA='
+                            },
+                            {
+                                name: 'DB_HOST',
+                                value: mysqlService.metadata.name
+                            },
+                            {
+                                name: 'DB_PORT',
+                                value: '3306'
+                            },
+                            {
+                                name: 'DB_USERNAME',
+                                valueFrom: {
+                                    secretKeyRef: {
+                                        name: mysqlConfig.metadata.name,
+                                        key: 'username'
+                                    }
+                                }
+                            },
+                            {
+                                name: 'DB_PASSWORD',
+                                valueFrom: {
+                                    secretKeyRef: {
+                                        name: mysqlConfig.metadata.name,
+                                        key: 'password'
+                                    }
+                                }
+                            },
+                            {
+                                name: 'DB_DATABASE',
+                                valueFrom: {
+                                    secretKeyRef: {
+                                        name: mysqlConfig.metadata.name,
+                                        key: 'databaseName'
+                                    }
+                                }
+                            }
+                        ]
                     }, {
                         name: appName + '-webserver',
                         image: 'ghcr.io/covik/box-webserver:latest',
