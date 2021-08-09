@@ -21,16 +21,13 @@ RUN rm -f /tmp/package-lock.json && \
 
 FROM production AS local
 
-RUN mkdir /pulumi-login && chown node /pulumi-login
-RUN chown -R node:node /pulumi/projects
-
-USER node
-
 COPY Pulumi.yaml .
 COPY Pulumi.local.yaml .
 
-ENV PULUMI_CONFIG_PASSPHRASE=''
+RUN chown -R node:node /pulumi/projects
 
-RUN pulumi login file:///pulumi-login --non-interactive && \
+USER node
+ENV PULUMI_CONFIG_PASSPHRASE=''
+RUN pulumi login file://${PULUMI_HOME} --non-interactive && \
     pulumi stack init local --non-interactive && \
     pulumi stack select local --non-interactive
