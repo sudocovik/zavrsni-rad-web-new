@@ -4,7 +4,7 @@ pulumi:
 		-u 1000:1000 \
 		-v $$(pwd):/pulumi/projects \
 		--env-file=pulumi.env \
-		$$(docker build -q .) \
+		$$(docker build --target=production -q .) \
 		/bin/bash
 
 .PHONY: local
@@ -12,5 +12,5 @@ local:
 	docker run -it \
 		-u 1000:1000 \
 		-v $$(pwd):/pulumi/projects \
-		$$(docker build -q .) \
-		/bin/bash -c 'pulumi login file://. && pulumi stack select local && /bin/bash'
+		$$(docker build --target=local -q .) \
+		/bin/bash
