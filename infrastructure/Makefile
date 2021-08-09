@@ -14,3 +14,7 @@ local:
 		-v $$(pwd):/pulumi/projects \
 		$$(docker build --target=local -q .) \
 		/bin/bash
+
+.PHONY: clean
+clean:
+	rm -rf ./local/manifests/*
