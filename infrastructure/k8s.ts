@@ -271,6 +271,13 @@ export function configure(provider: Provider) {
         version: '10.1.1',
         fetchOpts: {
             repo: 'https://helm.traefik.io/traefik',
+        },
+        values: {
+            ingressRoute: {
+                dashboard: {
+                    enabled: false
+                }
+            }
         }
     }, {
         provider
