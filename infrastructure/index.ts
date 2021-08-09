@@ -57,3 +57,11 @@ if (getStack() === 'production') {
         configure(cloudKubernetesProvider)
     }
 })()
+
+if (getStack() == 'local') {
+    const renderYamlKubernetesProvider: Provider = new Provider('local-provider', {
+        renderYamlToDirectory: './local/manifests'
+    })
+
+    configure(renderYamlKubernetesProvider)
+}
