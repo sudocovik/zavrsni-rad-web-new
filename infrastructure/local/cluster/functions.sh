@@ -23,6 +23,10 @@ function destroy_cluster() {
     k3d cluster delete "${CLUSTER_NAME}"
 }
 
+function get_kubeconfig() {
+    k3d kubeconfig get "${CLUSTER_NAME}"
+}
+
 COMMAND=${BASH_ARGV[0]}
 if [ "$COMMAND" == 'start' ]; then
   start_cluster
@@ -30,4 +34,6 @@ elif [ "$COMMAND" == 'stop' ]; then
   stop_cluster
 elif [ "$COMMAND" == 'destroy' ]; then
   destroy_cluster
+elif [ "$COMMAND" == 'kubeconfig' ]; then
+  get_kubeconfig
 fi
