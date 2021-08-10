@@ -13,7 +13,8 @@ build:
 
 .PHONY: start
 start:
-	$(COMMAND) start
+	$(COMMAND) start && \
+	$(COMMAND) kubeconfig > ./cluster/kubeconfig.yml
 
 .PHONY: stop
 stop:
@@ -21,5 +22,6 @@ stop:
 
 .PHONY: destroy
 destroy:
-	$(COMMAND) destroy
+	$(COMMAND) destroy && \
+		echo "" > ./cluster/kubeconfig.yml
 
