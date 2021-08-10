@@ -18,10 +18,11 @@ start:
 
 .PHONY: stop
 stop:
-	$(COMMAND) stop
+	$(COMMAND) stop && \
+	echo "" > ./cluster/kubeconfig.yml
 
 .PHONY: destroy
 destroy:
 	$(COMMAND) destroy && \
-		echo "" > ./cluster/kubeconfig.yml
+	echo "" > ./cluster/kubeconfig.yml
 
