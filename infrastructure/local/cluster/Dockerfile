@@ -7,6 +7,8 @@ RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 
 WORKDIR /cluster
 
+ENV KUBECONFIG '/cluster/kubeconfig.yml'
+
 COPY configuration.yml .
 COPY functions.sh ./cluster.sh
 RUN chmod +x ./cluster.sh
