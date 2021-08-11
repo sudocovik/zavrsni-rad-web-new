@@ -6,7 +6,7 @@ agents: 1
 image: rancher/k3s:v1.21.2-k3s1
 network: cluster-network
 kubeAPI:
-    hostIP: '0.0.0.0'
+    hostIP: '127.0.0.1'
     hostPort: '6443'
 ports:
   - port: 80:80
