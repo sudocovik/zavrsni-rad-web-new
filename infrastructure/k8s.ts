@@ -43,6 +43,7 @@ export function configure(provider: Provider) {
         }
     }, { provider })
 
+/*
     const mysqlConfig = new k8s.core.v1.Secret('mysql-config', {
         metadata: {
             name: 'mysql-config',
@@ -54,7 +55,6 @@ export function configure(provider: Provider) {
             databaseName: Buffer.from('box', 'utf-8').toString('base64')
         }
     }, { provider })
-
 
     const mysqlVolumeClaim = new k8s.core.v1.PersistentVolumeClaim('mysql-volume-claim', {
         metadata: {
@@ -70,7 +70,6 @@ export function configure(provider: Provider) {
             storageClassName: 'do-block-storage'
         }
     }, { provider })
-
 
     const mysqlName = 'mysql'
     const mysqlLabels = { app: mysqlName }
@@ -164,7 +163,7 @@ export function configure(provider: Provider) {
             selector: mysqlLabels,
         },
     }, { provider })
-
+*/
     const appName = 'box-app'
     const appLabels = { app: appName }
     const boxApp = new k8s.apps.v1.Deployment(appName, {
@@ -201,7 +200,7 @@ export function configure(provider: Provider) {
                                 name: 'APP_KEY',
                                 value: 'base64:qrEAkmIzeUHTgGJZrFORW2nt7UI9uEBxuNy5dYUZqxA='
                             },
-                            {
+                            /*{
                                 name: 'DB_HOST',
                                 value: mysqlService.metadata.name
                             },
@@ -235,7 +234,7 @@ export function configure(provider: Provider) {
                                         key: 'databaseName'
                                     }
                                 }
-                            }
+                            }*/
                         ]
                     }, {
                         name: appName + '-webserver',
