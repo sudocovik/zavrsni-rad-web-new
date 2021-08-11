@@ -1,7 +1,7 @@
 import { Provider } from '@pulumi/kubernetes'
 import * as k8s from '@pulumi/kubernetes'
 
-export function configure(provider: Provider) {
+export function configure(provider: Provider, isLocal: boolean = false) {
     const dockerConfigSecret = new k8s.core.v1.Secret('docker-config', {
         metadata: {
             name: 'docker-config'

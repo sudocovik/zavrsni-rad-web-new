@@ -64,5 +64,5 @@ if (getStack() == 'local') {
         kubeconfig: fs.readFileSync('./local/cluster/kubeconfig.yml', 'utf-8')
     })
 
-    configure(localKubernetesProvider)
+    configure(localKubernetesProvider, true)
 }
