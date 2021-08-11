@@ -19,6 +19,9 @@ options:
   k3d:
     wait: true
     timeout: '60s'
+  k3s:
+    extraServerArgs:
+      - --no-deploy=traefik
   kubeconfig:
     updateDefaultKubeconfig: false
     switchCurrentContext: false
