@@ -9,7 +9,7 @@ kubeAPI:
     hostIP: '127.0.0.1'
     hostPort: '6443'
 ports:
-  - port: 80:80
+  - port: 80:32080
     nodeFilters:
       - loadbalancer
   - port: 443:443
