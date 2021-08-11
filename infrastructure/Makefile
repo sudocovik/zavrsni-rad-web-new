@@ -11,6 +11,7 @@ pulumi:
 local:
 	docker run -it \
 		-u 1000:1000 \
+		--network host \
 		-v $$(pwd):/pulumi/projects \
 		$$(docker build --target=local -q .) \
 		/bin/bash
