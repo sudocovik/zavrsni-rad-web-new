@@ -43,6 +43,23 @@ export function configure(provider: Provider, isLocal: boolean = false) {
         }
     }, { provider })
 
+    if (isLocal) {
+        const persistentVolume = new k8s.core.v1.PersistentVolume('default-volume', {
+            metadata: {
+                name: 'default-volume'
+            },
+            spec: {
+                storageClassName: 'manual',
+                accessModes: [
+                    'ReadWriteOnce'
+                ],
+                hostPath: {
+                    path: '/storage/database'
+                }
+            }
+        }, { provider })
+    }
+
 /*
     const mysqlConfig = new k8s.core.v1.Secret('mysql-config', {
         metadata: {
