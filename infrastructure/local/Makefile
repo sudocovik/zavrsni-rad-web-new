@@ -12,17 +12,17 @@ build:
 	docker build -t ${IMAGE_NAME} ./cluster
 
 .PHONY: start
-start:
+start: build
 	$(COMMAND) start && \
 	$(COMMAND) kubeconfig > ./cluster/kubeconfig.yml
 
 .PHONY: stop
-stop:
+stop: build
 	$(COMMAND) stop && \
 	echo "" > ./cluster/kubeconfig.yml
 
 .PHONY: destroy
-destroy:
+destroy: build
 	$(COMMAND) destroy && \
 	echo "" > ./cluster/kubeconfig.yml
 
