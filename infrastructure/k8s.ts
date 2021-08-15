@@ -287,6 +287,17 @@ export function configure(provider: Provider, isLocal: boolean = false) {
         },
     }, { provider })
 
+    const additionalValues = !isLocal ? {} : {
+        service: {
+            type: 'NodePort'
+        },
+        ports: {
+            web: {
+                nodePort: 32080
+            }
+        }
+    }
+
     const traefikIngress = new k8s.helm.v3.Chart('traefik-ingress', {
         chart: 'traefik',
         version: '10.1.1',
@@ -298,7 +309,8 @@ export function configure(provider: Provider, isLocal: boolean = false) {
                 dashboard: {
                     enabled: false
                 }
-            }
+            },
+            ...additionalValues
         }
     }, {
         provider
