@@ -43,6 +43,8 @@ export function configure(provider: Provider, isLocal: boolean = false) {
         }
     }, { provider })
 
+    const storageClassName = isLocal ? 'manual' : 'do-block-storage'
+
     if (isLocal) {
         const persistentVolume = new k8s.core.v1.PersistentVolume('default-volume', {
             metadata: {
@@ -87,7 +89,7 @@ export function configure(provider: Provider, isLocal: boolean = false) {
                     storage: '1Gi'
                 }
             },
-            storageClassName: 'do-block-storage'
+            storageClassName
         }
     }, { provider })
 
