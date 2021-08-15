@@ -65,7 +65,7 @@ export function configure(provider: Provider, isLocal: boolean = false) {
         }, { provider })
     }
 
-/*
+
     const mysqlConfig = new k8s.core.v1.Secret('mysql-config', {
         metadata: {
             name: 'mysql-config',
@@ -185,7 +185,7 @@ export function configure(provider: Provider, isLocal: boolean = false) {
             selector: mysqlLabels,
         },
     }, { provider })
-*/
+
     const appName = 'box-app'
     const appLabels = { app: appName }
     const boxApp = new k8s.apps.v1.Deployment(appName, {
@@ -222,7 +222,7 @@ export function configure(provider: Provider, isLocal: boolean = false) {
                                 name: 'APP_KEY',
                                 value: 'base64:qrEAkmIzeUHTgGJZrFORW2nt7UI9uEBxuNy5dYUZqxA='
                             },
-                            /*{
+                            {
                                 name: 'DB_HOST',
                                 value: mysqlService.metadata.name
                             },
@@ -256,7 +256,7 @@ export function configure(provider: Provider, isLocal: boolean = false) {
                                         key: 'databaseName'
                                     }
                                 }
-                            }*/
+                            }
                         ]
                     }, {
                         name: appName + '-webserver',
