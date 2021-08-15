@@ -49,7 +49,10 @@ export function configure(provider: Provider, isLocal: boolean = false) {
                 name: 'default-volume'
             },
             spec: {
-                storageClassName: 'manual',
+                storageClassName,
+                capacity: {
+                    storage: '1Gi'
+                },
                 accessModes: [
                     'ReadWriteOnce'
                 ],
