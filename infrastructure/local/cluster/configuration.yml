@@ -12,6 +12,10 @@ ports:
   - port: 80:32080
     nodeFilters:
       - loadbalancer
+volumes:
+  - volume: cluster-database-storage:/storage/database
+    nodeFilters:
+      - agent[0]
 options:
   k3d:
     wait: true
