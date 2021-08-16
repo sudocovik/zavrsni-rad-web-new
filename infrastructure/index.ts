@@ -2,11 +2,9 @@ import {
     Project,
     Region,
     Vpc,
-    KubernetesCluster,
-    getKubernetesCluster,
-    GetKubernetesClusterResult,
+    KubernetesCluster
 } from '@pulumi/digitalocean'
-import { getStack } from '@pulumi/pulumi'
+import { getStack, Output } from '@pulumi/pulumi'
 import { Provider } from '@pulumi/kubernetes'
 import { configure } from './k8s'
 import * as fs from 'fs'
@@ -40,24 +38,16 @@ if (getStack() === 'production') {
         name: 'Final thesis',
         description: 'Resources supporting final thesis',
         purpose: 'Class project / Educational purposes',
-        resources: [cluster.clusterUrn]
+        resources: [ cluster.clusterUrn ]
     })
+
+    const kubeconfig: Output<string> = cluster.kubeConfigs[0].rawConfig
+    const cloudKubernetesProvider: Provider = new Provider('cloud-provider', {
+        kubeconfig
+    })
+
+    configure(cloudKubernetesProvider)
 }
-
-(async () => {
-    if (getStack() === 'k8s-production') {
-        const cluster = await getKubernetesCluster({
-            name: clusterName
-        }) as GetKubernetesClusterResult
-
-        const kubeconfig: string = cluster.kubeConfigs[0].rawConfig
-        const cloudKubernetesProvider: Provider = new Provider('cloud-provider', {
-            kubeconfig
-        })
-
-        configure(cloudKubernetesProvider)
-    }
-})()
 
 if (getStack() == 'local') {
     const localKubernetesProvider: Provider = new Provider('local-provider', {
