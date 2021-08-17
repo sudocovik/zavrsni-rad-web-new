@@ -7,7 +7,7 @@ import {
 import { getStack, Output } from '@pulumi/pulumi'
 import { Provider } from '@pulumi/kubernetes'
 import { configure } from './k8s'
-import * as fs from 'fs'
+import { readFileSync } from 'fs'
 
 const clusterName: string = 'final-thesis'
 
@@ -51,7 +51,7 @@ if (getStack() === 'production') {
 
 if (getStack() == 'local') {
     const localKubernetesProvider: Provider = new Provider('local-provider', {
-        kubeconfig: fs.readFileSync('./local/cluster/kubeconfig.yml', 'utf-8')
+        kubeconfig: readFileSync('./local/cluster/kubeconfig.yml', 'utf-8')
     })
 
     configure(localKubernetesProvider, true)
