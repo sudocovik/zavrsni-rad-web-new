@@ -206,7 +206,7 @@ export function configure(provider: Provider, isLocal: boolean = false) {
                     imagePullSecrets: [{ name: dockerConfigSecret.metadata.name }],
                     containers: [{
                         name: appName,
-                        image: 'ghcr.io/covik/box-app:latest',
+                        image: 'ghcr.io/covik/box-app:' + (isLocal ? 'dev' : 'latest'),
                         imagePullPolicy: 'Always',
                         ports: [{ containerPort: 9000 }],
                         env: [
