@@ -152,8 +152,8 @@ export default function (
     mysqlService: k8s.core.v1.Service,
     dockerLogin: k8s.core.v1.Secret,
     isLocal: boolean
-) {
+): k8s.core.v1.Service {
     const nginxConfiguration: k8s.core.v1.ConfigMap = provisionNginxConfiguration(provider)
     const deployment: k8s.apps.v1.Deployment = provisionDeployment(provider, nginxConfiguration, mysqlConfiguration, mysqlService, dockerLogin, isLocal)
-    provisionService(provider, deployment)
+    return provisionService(provider, deployment)
 }
