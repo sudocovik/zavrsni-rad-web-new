@@ -1,3 +1,3 @@
 .PHONY: build
 build:
-	docker build -t covik/box-app -f docker/Dockerfile .
+	docker build -t ghcr.io/covik/box-app:dev -f docker/Dockerfile .
