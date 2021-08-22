@@ -22,7 +22,7 @@ COPY ./public ./public
 COPY ./resources/lang ./resources/lang
 COPY ./resources/views ./resources/views
 COPY ./routes ./routes
-COPY ./storage/framework ./storage/framework
+COPY --chown=www-data ./storage/framework ./storage/framework
 COPY ./composer.json ./composer.json
 COPY ./composer.lock ./composer.lock
 COPY ./artisan ./artisan
