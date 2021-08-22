@@ -2,7 +2,7 @@ import { getStack, Output } from '@pulumi/pulumi'
 import { KubernetesCluster } from '@pulumi/digitalocean'
 import { Provider } from '@pulumi/kubernetes'
 import { provision as provisionCloudResources } from './src/cloud-resources'
-import { configure } from './k8s'
+import configure from './src/kubernetes'
 import { readFileSync } from 'fs'
 
 if (getStack() === 'production') {
