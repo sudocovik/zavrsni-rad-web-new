@@ -20,6 +20,7 @@ COPY ./bootstrap ./bootstrap
 COPY ./config ./config
 COPY ./public ./public
 COPY ./resources/lang ./resources/lang
+COPY ./resources/views ./resources/views
 COPY ./routes ./routes
 COPY ./storage/framework ./storage/framework
 COPY ./composer.json ./composer.json
