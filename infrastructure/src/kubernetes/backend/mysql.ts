@@ -135,5 +135,10 @@ export default function (provider: Provider, isLocal: boolean) {
     const configuration: k8s.core.v1.Secret = provisionConfiguration(provider)
     const volumeClaim: k8s.core.v1.PersistentVolumeClaim = provisionVolumeClaim(provider, storageClassName)
     const deployment: k8s.apps.v1.Deployment = provisionDeployment(provider, volumeClaim, configuration)
-    provisionService(provider, deployment)
+    const service: k8s.core.v1.Service = provisionService(provider, deployment)
+
+    return {
+        configuration,
+        service
+    }
 }
