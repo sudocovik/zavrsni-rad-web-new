@@ -1,10 +1,15 @@
 <template>
-  <div>Test</div>
+  <DashboardView />
 </template>
 
 <script>
+import DashboardView from '@/views/DashboardView'
 
 export default {
-  name: 'App'
+  name: 'App',
+
+  components: {
+    DashboardView
+  }
 }
 </script>
