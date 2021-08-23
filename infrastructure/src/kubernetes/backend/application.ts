@@ -42,9 +42,9 @@ function provisionDeployment(
     dockerLogin: k8s.core.v1.Secret,
     isLocal: boolean
 ): k8s.apps.v1.Deployment {
-    const labels = { app: 'box-app' }
+    const labels = { app: 'box-app-backend' }
 
-    return new k8s.apps.v1.Deployment('box-app', {
+    return new k8s.apps.v1.Deployment('box-app-backend', {
         spec: {
             selector: { matchLabels: labels },
             replicas: 1,
@@ -61,7 +61,7 @@ function provisionDeployment(
                     ],
                     imagePullSecrets: [{ name: dockerLogin.metadata.name }],
                     containers: [{
-                        name: 'box-app',
+                        name: 'box-app-backend',
                         image: 'ghcr.io/covik/box-app-backend:' + (isLocal ? 'dev' : 'latest'),
                         imagePullPolicy: 'Always',
                         ports: [{ containerPort: 9000 }],
@@ -132,7 +132,7 @@ function provisionDeployment(
 }
 
 function provisionService(provider: Provider, deployment: k8s.apps.v1.Deployment): k8s.core.v1.Service {
-    return new k8s.core.v1.Service('box-app', {
+    return new k8s.core.v1.Service('box-app-backend', {
         metadata: { labels: deployment.spec.template.metadata.labels },
         spec: {
             type: 'ClusterIP',
