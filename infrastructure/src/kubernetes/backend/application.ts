@@ -62,7 +62,7 @@ function provisionDeployment(
                     imagePullSecrets: [{ name: dockerLogin.metadata.name }],
                     containers: [{
                         name: 'box-app',
-                        image: 'ghcr.io/covik/box-app:' + (isLocal ? 'dev' : 'latest'),
+                        image: 'ghcr.io/covik/box-app-backend:' + (isLocal ? 'dev' : 'latest'),
                         imagePullPolicy: 'Always',
                         ports: [{ containerPort: 9000 }],
                         env: [

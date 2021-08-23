@@ -1,7 +1,7 @@
 .PHONY: build
 build:
-	docker build -t ghcr.io/covik/box-app:dev -f docker/Dockerfile .
+	docker build -t ghcr.io/covik/box-app-backend:dev -f docker/Dockerfile .
 
 .PHONY: push
 push:
-	docker push ghcr.io/covik/box-app:dev
+	docker push ghcr.io/covik/box-app-backend:dev
