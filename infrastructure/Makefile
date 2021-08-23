@@ -1,6 +1,7 @@
 .PHONY: pulumi
 pulumi:
 	docker run -it \
+		--rm \
 		-u 1000:1000 \
 		-v $$(pwd):/pulumi/projects \
 		--env-file=pulumi.env \
@@ -10,6 +11,7 @@ pulumi:
 .PHONY: local
 local:
 	docker run -it \
+		--rm
 		-u 1000:1000 \
 		--network host \
 		-v $$(pwd):/pulumi/projects \
