@@ -32,25 +32,49 @@ function provisionTraefikController(provider: Provider, isLocal: boolean): k8s.h
     })
 }
 
-function provisionIngress(provider: Provider, backendApplication: k8s.core.v1.Service): k8s.networking.v1.Ingress {
+function provisionIngress(provider: Provider, frontendApplication: k8s.core.v1.Service, backendApplication: k8s.core.v1.Service): k8s.networking.v1.Ingress {
     return new k8s.networking.v1.Ingress('default-ingress', {
         metadata: {
             name: 'default-ingress'
         },
         spec: {
-            defaultBackend: {
-                service: {
-                    name: backendApplication.metadata.name,
-                    port: {
-                        number: backendApplication.spec.ports[0].port
-                    }
-                }
-            }
+            rules: [{
+               http: {
+                   paths: [{
+                       path: '/api',
+                       pathType: 'Prefix',
+                       backend: {
+                           service: {
+                               name: backendApplication.metadata.name,
+                               port: {
+                                   number: backendApplication.spec.ports[0].port
+                               }
+                           }
+                       }
+                   }, {
+                       path: '/',
+                       pathType: 'Prefix',
+                       backend: {
+                           service: {
+                               name: frontendApplication.metadata.name,
+                               port: {
+                                   number: frontendApplication.spec.ports[0].port
+                               }
+                           }
+                       }
+                   }]
+               }
+            }]
         }
     }, { provider })
 }
 
-export default function (provider: Provider, backendApplication: k8s.core.v1.Service, isLocal: boolean) {
+export default function (
+    provider: Provider,
+    frontendApplication: k8s.core.v1.Service,
+    backendApplication: k8s.core.v1.Service,
+    isLocal: boolean
+) {
     provisionTraefikController(provider, isLocal)
-    provisionIngress(provider, backendApplication)
+    provisionIngress(provider, frontendApplication, backendApplication)
 }

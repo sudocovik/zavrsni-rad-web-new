@@ -4,6 +4,7 @@ import provisionPersistentVolume from './local-volume'
 import provisionDockerLoginSecret from './docker-login'
 import provisionMysql from './backend/mysql'
 import provisionBackendApplication from './backend/application'
+import provisionFrontendApplication from './frontend'
 import provisionIngress from './ingress'
 
 export default function(provider: Provider, isLocal: boolean = false) {
@@ -14,5 +15,6 @@ export default function(provider: Provider, isLocal: boolean = false) {
         service: mysqlService
     } = provisionMysql(provider, isLocal)
     const backendApplication: k8s.core.v1.Service = provisionBackendApplication(provider, mysqlConfiguration, mysqlService, dockerLogin, isLocal)
-    provisionIngress(provider, backendApplication, isLocal)
+    const frontendApplication: k8s.core.v1.Service = provisionFrontendApplication(provider, dockerLogin)
+    provisionIngress(provider, frontendApplication, backendApplication, isLocal)
 }
