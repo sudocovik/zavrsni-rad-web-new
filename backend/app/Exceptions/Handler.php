@@ -2,7 +2,11 @@
 
 namespace App\Exceptions;
 
+use App\Models\Card;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -13,7 +17,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        InvalidCredentialsException::class
     ];
 
     /**
@@ -22,20 +26,53 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontFlash = [
-        'current_password',
         'password',
         'password_confirmation',
     ];
 
     /**
-     * Register the exception handling callbacks for the application.
+     * Report or log an exception.
      *
+     * @param  \Throwable  $exception
      * @return void
+     *
+     * @throws \Exception
      */
-    public function register()
+    public function report(Throwable $exception)
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        parent::report($exception);
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Throwable
+     */
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof AuthenticationException) {
+            return response()->json(['message' => 'Niste prijavljeni.'], 401);
+        }
+
+        if ($exception instanceof InvalidCredentialsException) {
+            return response()->json(['message' => 'Korisničko ime i/ili lozinka su ne ispravni.'], 401);
+        }
+
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'errors' => $exception->errors(),
+                'message' => 'Dani podaci nisu ispravni.'
+            ], $exception->status);
+        }
+
+        if ($exception instanceof ModelNotFoundException && $exception->getModel() === Card::class) {
+            return response()->json(['message' => 'Kartica ne postoji.'], 404);
+        }
+
+        return parent::render($request, $exception);
     }
 }

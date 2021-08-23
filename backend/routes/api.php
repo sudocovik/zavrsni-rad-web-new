@@ -1,6 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\BoxAuthorizationAction;
+use App\Http\Controllers\CardController;
+use App\Http\Controllers\FetchAccessLogAction;
+use App\Http\Controllers\LoginAction;
+use App\Http\Controllers\LogoutAction;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +18,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('login', LoginAction::class);
+
+Route::group(['middleware' => 'auth'], function() {
+    Route::get('logout', LogoutAction::class);
+
+    Route::resource('card', CardController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    Route::get('/access-log', FetchAccessLogAction::class);
 });
+
+Route::post('/box/authorize', BoxAuthorizationAction::class);
