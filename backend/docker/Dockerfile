@@ -20,7 +20,6 @@ COPY ./bootstrap ./bootstrap
 COPY ./config ./config
 COPY ./public ./public
 COPY ./resources/lang ./resources/lang
-COPY ./resources/views ./resources/views
 COPY ./routes ./routes
 COPY --chown=www-data ./storage/framework ./storage/framework
 COPY ./composer.json ./composer.json
