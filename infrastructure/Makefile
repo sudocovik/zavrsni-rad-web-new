@@ -11,7 +11,7 @@ pulumi:
 .PHONY: local
 local:
 	docker run -it \
-		--rm
+		--rm \
 		-u 1000:1000 \
 		--network host \
 		-v $$(pwd):/pulumi/projects \
