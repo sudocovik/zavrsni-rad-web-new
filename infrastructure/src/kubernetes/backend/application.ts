@@ -5,10 +5,59 @@ function provisionDeployment(
     provider: Provider,
     mysqlConfiguration: k8s.core.v1.Secret,
     mysqlService: k8s.core.v1.Service,
-    dockerLogin: k8s.core.v1.Secret,
-    isLocal: boolean
+    dockerLogin: k8s.core.v1.Secret
 ): k8s.apps.v1.Deployment {
     const labels = { app: 'box-app-backend' }
+
+    const env = [
+        {
+            name: 'LOG_CHANNEL',
+            value: 'stderr'
+        },
+        {
+            name: 'APP_ENV',
+            value: 'production'
+        },
+        {
+            name: 'APP_KEY',
+            value: 'base64:qrEAkmIzeUHTgGJZrFORW2nt7UI9uEBxuNy5dYUZqxA='
+        },
+        {
+            name: 'DB_HOST',
+            value: mysqlService.metadata.name
+        },
+        {
+            name: 'DB_PORT',
+            value: '3306'
+        },
+        {
+            name: 'DB_USERNAME',
+            valueFrom: {
+                secretKeyRef: {
+                    name: mysqlConfiguration.metadata.name,
+                    key: 'username'
+                }
+            }
+        },
+        {
+            name: 'DB_PASSWORD',
+            valueFrom: {
+                secretKeyRef: {
+                    name: mysqlConfiguration.metadata.name,
+                    key: 'password'
+                }
+            }
+        },
+        {
+            name: 'DB_DATABASE',
+            valueFrom: {
+                secretKeyRef: {
+                    name: mysqlConfiguration.metadata.name,
+                    key: 'databaseName'
+                }
+            }
+        }
+    ]
 
     return new k8s.apps.v1.Deployment('box-app-backend', {
         spec: {
@@ -18,60 +67,20 @@ function provisionDeployment(
                 metadata: { labels: labels },
                 spec: {
                     imagePullSecrets: [{ name: dockerLogin.metadata.name }],
+                    initContainers: [{
+                        name: 'box-app-backend-migrations',
+                        image: 'ghcr.io/covik/box-app-backend:latest',
+                        imagePullPolicy: 'Always',
+                        command: ['/bin/sh', '-c'],
+                        args: ['php artisan migrate --force && php artisan db:seed --force'],
+                        env
+                    }],
                     containers: [{
                         name: 'box-app-backend',
-                        image: 'ghcr.io/covik/box-app-backend:' + (isLocal ? 'dev' : 'latest'),
+                        image: 'ghcr.io/covik/box-app-backend:latest',
                         imagePullPolicy: 'Always',
                         ports: [{ containerPort: 9000 }],
-                        env: [
-                            {
-                                name: 'LOG_CHANNEL',
-                                value: 'stderr'
-                            },
-                            {
-                                name: 'APP_ENV',
-                                value: 'production'
-                            },
-                            {
-                                name: 'APP_KEY',
-                                value: 'base64:qrEAkmIzeUHTgGJZrFORW2nt7UI9uEBxuNy5dYUZqxA='
-                            },
-                            {
-                                name: 'DB_HOST',
-                                value: mysqlService.metadata.name
-                            },
-                            {
-                                name: 'DB_PORT',
-                                value: '3306'
-                            },
-                            {
-                                name: 'DB_USERNAME',
-                                valueFrom: {
-                                    secretKeyRef: {
-                                        name: mysqlConfiguration.metadata.name,
-                                        key: 'username'
-                                    }
-                                }
-                            },
-                            {
-                                name: 'DB_PASSWORD',
-                                valueFrom: {
-                                    secretKeyRef: {
-                                        name: mysqlConfiguration.metadata.name,
-                                        key: 'password'
-                                    }
-                                }
-                            },
-                            {
-                                name: 'DB_DATABASE',
-                                valueFrom: {
-                                    secretKeyRef: {
-                                        name: mysqlConfiguration.metadata.name,
-                                        key: 'databaseName'
-                                    }
-                                }
-                            }
-                        ]
+                        env
                     }, {
                         name: 'box-app-webserver',
                         image: 'ghcr.io/covik/box-app-backend-webserver:latest',
@@ -103,9 +112,8 @@ export default function (
     provider: Provider,
     mysqlConfiguration: k8s.core.v1.Secret,
     mysqlService: k8s.core.v1.Service,
-    dockerLogin: k8s.core.v1.Secret,
-    isLocal: boolean
+    dockerLogin: k8s.core.v1.Secret
 ): k8s.core.v1.Service {
-    const deployment: k8s.apps.v1.Deployment = provisionDeployment(provider, mysqlConfiguration, mysqlService, dockerLogin, isLocal)
+    const deployment: k8s.apps.v1.Deployment = provisionDeployment(provider, mysqlConfiguration, mysqlService, dockerLogin)
     return provisionService(provider, deployment)
 }

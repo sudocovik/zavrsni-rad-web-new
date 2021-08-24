@@ -8,5 +8,5 @@ export default function (provider: Provider, dockerLogin: k8s.core.v1.Secret, is
         configuration: mysqlConfiguration,
         service: mysqlService
     } = provisionMysql(provider, isLocal)
-    return  provisionApplication(provider, mysqlConfiguration, mysqlService, dockerLogin, isLocal)
+    return  provisionApplication(provider, mysqlConfiguration, mysqlService, dockerLogin)
 }
