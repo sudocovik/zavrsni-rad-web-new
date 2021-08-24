@@ -2,7 +2,6 @@ FROM node:16.7-alpine3.14 AS production-artifact
 
 WORKDIR /build
 
-# no package-lock.json because of https://github.com/npm/cli/issues/2117
 COPY package.json ./package.json
 COPY package-lock.json ./package-lock.json
 
