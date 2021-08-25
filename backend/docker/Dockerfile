@@ -18,6 +18,7 @@ COPY --from=build-dependencies /usr/bin/composer /usr/bin/composer
 
 COPY ./bootstrap ./bootstrap
 COPY ./config ./config
+COPY ./database ./database
 COPY ./public ./public
 COPY ./resources/lang ./resources/lang
 COPY ./routes ./routes
