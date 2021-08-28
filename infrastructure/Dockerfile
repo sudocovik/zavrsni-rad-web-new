@@ -1,4 +1,4 @@
-FROM pulumi/pulumi-nodejs:latest AS production
+FROM pulumi/pulumi-nodejs:3.11.0 AS production
 
 COPY --from=alpine/helm:latest /usr/bin/helm /usr/bin/helm
 
