@@ -1,6 +1,6 @@
 import { KubernetesCluster, Project, Region, Vpc } from '@pulumi/digitalocean'
 
-export function provision() {
+export default function() {
     const region: Region = Region.FRA1
     const clusterName: string = 'final-thesis'
 
