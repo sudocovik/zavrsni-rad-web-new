@@ -1,7 +1,7 @@
 import { Output } from '@pulumi/pulumi'
 import { KubernetesCluster, Project, Region, Vpc } from '@pulumi/digitalocean'
 
-export default function(): Output<string> {
+export default async function(): Promise<Output<string>> {
     const region: Region = Region.FRA1
     const clusterName: string = 'final-thesis'
 
