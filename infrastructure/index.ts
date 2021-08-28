@@ -1,8 +1,8 @@
 import { getStack, Output } from '@pulumi/pulumi'
 import { KubernetesCluster } from '@pulumi/digitalocean'
+import { readFileSync } from 'fs'
 import provisionCloudResources from './src/cloud-resources'
 import configure from './src/kubernetes'
-import { readFileSync } from 'fs'
 
 if (getStack() === 'production') {
     const cluster: KubernetesCluster = provisionCloudResources()
