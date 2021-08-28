@@ -1,6 +1,7 @@
+import { Output } from '@pulumi/pulumi'
 import { KubernetesCluster, Project, Region, Vpc } from '@pulumi/digitalocean'
 
-export default function() {
+export default function(): Output<string> {
     const region: Region = Region.FRA1
     const clusterName: string = 'final-thesis'
 
@@ -31,5 +32,5 @@ export default function() {
         resources: [ cluster.clusterUrn ]
     })
 
-    return cluster
+    return cluster.kubeConfigs[0].rawConfig
 }
