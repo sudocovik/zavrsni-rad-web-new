@@ -70,8 +70,6 @@ export default {
           this.password.errorMessages = passwordErrors
         } else if (e.response.status === 401) {
           this.handleWrongCredentialsException()
-        } else if (e.response.status === 404) {
-          this.handleAlreadyLoggedInException()
         }
 
         this.loading = false
@@ -89,10 +87,6 @@ export default {
 
     handleWrongCredentialsException () {
       this.$emit('error:wrong-credentials')
-    },
-
-    handleAlreadyLoggedInException () {
-      this.$emit('error:already-logged-in')
     }
   }
 }

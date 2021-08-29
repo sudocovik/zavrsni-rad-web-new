@@ -25,7 +25,6 @@
                             <LoginForm
                                 @success="redirectToDashboard"
                                 @error:wrong-credentials="notifyUserCredentialsAreWrong"
-                                @error:already-logged-in="redirectToDashboard"
                             />
                         </v-card-text>
                     </v-card>
