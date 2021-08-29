@@ -8,9 +8,10 @@ function pickEntryModelVariantBasedOnStatus (accessGranted) {
 }
 
 export function convertRawEntriesToEntryModels (entries) {
-  return entries.map(({ id, uid, atTime, accessGranted }) => {
-    const EntryVariant = pickEntryModelVariantBasedOnStatus(accessGranted)
+  // eslint-disable-next-line camelcase
+  return entries.map(({ id, uid, at_time, access_granted }) => {
+    const EntryVariant = pickEntryModelVariantBasedOnStatus(access_granted)
 
-    return new EntryVariant(id, uid, atTime)
+    return new EntryVariant(id, uid, at_time)
   })
 }
