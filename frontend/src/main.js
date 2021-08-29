@@ -5,7 +5,10 @@ import axios from 'axios'
 
 Vue.config.productionTip = false
 
-process.env.NODE_ENV === 'development' && (axios.defaults.baseURL = 'http://localhost')
+if (process.env.NODE_ENV === 'development') {
+  axios.defaults.baseURL = 'http://localhost'
+  axios.defaults.withCredentials = true
+}
 
 new Vue({
   vuetify,
