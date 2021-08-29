@@ -68,7 +68,7 @@ function provisionDeployment(
                 spec: {
                     imagePullSecrets: [{ name: dockerLogin.metadata.name }],
                     initContainers: [{
-                        name: 'box-app-backend-migrations',
+                        name: 'database-migrations',
                         image: 'ghcr.io/covik/box-app-backend:latest',
                         imagePullPolicy: 'Always',
                         command: ['/bin/sh', '-c'],
@@ -76,13 +76,13 @@ function provisionDeployment(
                         env
                     }],
                     containers: [{
-                        name: 'box-app-backend',
+                        name: 'app',
                         image: 'ghcr.io/covik/box-app-backend:latest',
                         imagePullPolicy: 'Always',
                         ports: [{ containerPort: 9000 }],
                         env
                     }, {
-                        name: 'box-app-webserver',
+                        name: 'webserver',
                         image: 'ghcr.io/covik/box-app-backend-webserver:latest',
                         imagePullPolicy: 'Always',
                         ports: [{ containerPort: 80 }]
