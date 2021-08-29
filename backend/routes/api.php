@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', LoginAction::class);
 
 Route::group(['middleware' => 'auth'], function() {
+    Route::get('/user', fn () => response()->noContent());
+
     Route::get('logout', LogoutAction::class);
 
     Route::resource('card', CardController::class)->only(['index', 'store', 'update', 'destroy']);
