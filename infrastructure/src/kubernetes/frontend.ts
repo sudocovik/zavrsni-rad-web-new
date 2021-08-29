@@ -15,7 +15,7 @@ function provisionApplication(provider: Provider, dockerLogin: k8s.core.v1.Secre
                 spec: {
                     imagePullSecrets: [{ name: dockerLogin.metadata.name }],
                     containers: [{
-                        name: 'box-app-frontend',
+                        name: 'app',
                         image: 'ghcr.io/covik/box-app-frontend:latest',
                         imagePullPolicy: 'Always',
                         ports: [{
