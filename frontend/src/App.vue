@@ -1,7 +1,12 @@
 <template>
   <StartupView>
-    <DashboardView v-if="false" />
-    <LoginView v-else-if="false" />
+    <template #logged-in>
+      <DashboardView />
+    </template>
+
+    <template #logged-out>
+      <LoginView />
+    </template>
   </StartupView>
 </template>
 

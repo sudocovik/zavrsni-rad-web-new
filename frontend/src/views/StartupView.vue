@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app v-if="fetchingUserInProgress">
     <v-container
       fluid
       class="fill-height"
@@ -18,10 +18,38 @@
       </v-row>
     </v-container>
   </v-app>
+  <div v-else>
+    <slot
+      v-if="userIsLoggedIn === true"
+      name="logged-in"
+    />
+    <slot
+      v-else
+      name="logged-out"
+    />
+  </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-  name: 'StartupView'
+  name: 'StartupView',
+
+  data: () => ({
+    userIsLoggedIn: null
+  }),
+
+  created () {
+    axios.get('/api/user')
+      .then(() => (this.userIsLoggedIn = true))
+      .catch(() => (this.userIsLoggedIn = false))
+  },
+
+  computed: {
+    fetchingUserInProgress () {
+      return this.userIsLoggedIn === null
+    }
+  }
 }
 </script>
