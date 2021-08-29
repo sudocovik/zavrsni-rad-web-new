@@ -4,8 +4,8 @@
       <DashboardView />
     </template>
 
-    <template #logged-out>
-      <LoginView />
+    <template #logged-out="{ login: redirectToDashboard }">
+      <LoginView @logged-in="redirectToDashboard" />
     </template>
   </StartupView>
 </template>

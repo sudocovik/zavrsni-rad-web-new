@@ -26,6 +26,7 @@
     <slot
       v-else
       name="logged-out"
+      :login="login"
     />
   </div>
 </template>
@@ -49,6 +50,11 @@ export default {
   computed: {
     fetchingUserInProgress () {
       return this.userIsLoggedIn === null
+    }
+  },
+  methods: {
+    login () {
+      this.userIsLoggedIn = true
     }
   }
 }
