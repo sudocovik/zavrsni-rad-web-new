@@ -1,7 +1,34 @@
-import { Output } from '@pulumi/pulumi'
+import { Input, interpolate, Output } from '@pulumi/pulumi'
 import { KubernetesCluster, Project, Region, Vpc } from '@pulumi/digitalocean'
 
-export default async function(): Promise<Output<string>> {
+export function createTokenKubeconfig(
+    cluster: KubernetesCluster,
+    user: Input<string>,
+    apiToken: Input<string>,
+): Output<string> {
+    const clusterName = interpolate`do-${cluster.region}-${cluster.name}`
+
+    return interpolate`apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: ${cluster.kubeConfigs[0].clusterCaCertificate}
+    server: ${cluster.endpoint}
+  name: ${clusterName}
+contexts:
+- context:
+    cluster: ${clusterName}
+    user: ${clusterName}-${user}
+  name: ${clusterName}
+current-context: ${clusterName}
+kind: Config
+users:
+- name: ${clusterName}-${user}
+  user:
+    token: ${apiToken}
+`;
+}
+
+export default async function(clusterToken: string): Promise<Output<string>> {
     const region: Region = Region.FRA1
     const clusterName: string = 'final-thesis'
 
@@ -32,5 +59,5 @@ export default async function(): Promise<Output<string>> {
         resources: [ cluster.clusterUrn ]
     })
 
-    return cluster.kubeConfigs[0].rawConfig
+    return createTokenKubeconfig(cluster, 'admin', clusterToken)
 }

@@ -3,8 +3,10 @@ import { readFileSync } from 'fs'
 import provisionCloudResources from './src/cloud-resources'
 import provisionKubernetesManifests from './src/kubernetes'
 
+const clusterToken: string = process.env.CLUSTER_TOKEN ?? ''
+
 if (getStack() === 'production') {
-    provisionCloudResources().then(provisionKubernetesManifests)
+    provisionCloudResources(clusterToken).then(provisionKubernetesManifests)
 }
 
 if (getStack() == 'local') {
